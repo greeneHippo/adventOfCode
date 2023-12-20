@@ -2,7 +2,6 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
-!**/src/main/kotlin/input/**
 !**/src/test/**/build/
 
 ### IntelliJ IDEA ###
@@ -41,3 +40,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Project specific ###
+/src/main/kotlin/input/
