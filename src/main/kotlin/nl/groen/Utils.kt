@@ -9,13 +9,12 @@ import kotlin.io.path.readLines
 fun readLines (input : String): List<String> {
 
     try {
-        val fullPath = Path("src\\main\\resources\\" + input + "_input.txt").absolutePathString()
+        val fullPath = Path("src\\main\\kotlin\\input\\" + input + "_input.txt").absolutePathString()
         return Path(fullPath).readLines()
     } catch (e: Exception) {
-        println("test")
     }
 
-    val fullPath = Path("src\\main\\resources\\old\\" + input + "_input.txt").absolutePathString()
+    val fullPath = Path("src\\main\\kotlin\\input\\old\\" + input + "_input.txt").absolutePathString()
     return Path(fullPath).readLines()
 }
 
@@ -44,6 +43,14 @@ inline fun <reified T> transpose(twoDArray: Array<Array<T>>): Array<Array<T>> {
     }
 }
 
+fun transposeListString(input: List<String>): List<String> {
+
+    val intrange = IntRange(1, input[0].length)
+    val transposed = transpose(input.map { it.split("").slice(intrange) }.toList())
+    return transposed.map { it.reduce{acc, s -> acc + s} }
+
+}
+
 enum class Direction(val symbolULDR: String, val symbolNumber: String) {
    NORTH("U", "3"), EAST("R", "0"), SOUTH("D", "1"), WEST("L", "2");
 
@@ -61,6 +68,12 @@ inline fun <reified T> revertRows(input: Array<Array<T>>): Array<Array<T>> {
     return input.map { return@map it.reversed().toTypedArray() }.toTypedArray()
 }
 
+fun <T> printList(input: List<T>) {
+    println("-------------------------------------------")
+    input.forEach {
+        println(it)
+    }
+}
 fun print2DList(input: List<List<String>>) {
     println("-------------------------------------------")
     input.forEach {
