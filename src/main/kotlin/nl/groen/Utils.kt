@@ -18,6 +18,33 @@ fun readLines (input : String): List<String> {
     return Path(fullPath).readLines()
 }
 
+data class MoveAction(val position: Position, val direction: Direction)
+data class Position(val x: Int, val y: Int)
+
+fun parseGrid(lines: List<String>, costGrid: MutableMap<Position, Int>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>) {
+
+    lines.forEachIndexed { y, s ->
+        s.forEachIndexed { x, c ->
+            costGrid[Position(x, y)] = c.uppercase().toInt()
+            if (neighbourGrid[Position(x, y)] == null) {
+                neighbourGrid[Position(x, y)] = mutableListOf()
+            }
+            if (x != s.length - 1) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x + 1, y), Direction.EAST))
+            }
+            if (x != 0) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x - 1, y), Direction.WEST))
+            }
+            if (y != lines.size - 1) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x, y + 1), Direction.SOUTH))
+            }
+            if (y != 0) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x, y - 1), Direction.NORTH))
+            }
+        }
+    }
+}
+
 fun <T> transpose(list: List<List<T>>): List<List<T>> {
     val N = list.stream().mapToInt { l: List<T> -> l.size }.max().orElse(-1)
     val iterList = list.stream().map { it: List<T> -> it.iterator() }.collect(Collectors.toList())
@@ -60,6 +87,9 @@ enum class Direction(val symbolULDR: String, val symbolNumber: String) {
         }
         fun getByNumber(input: String): Direction {
             return Direction.entries.firstOrNull { part -> input == part.symbolNumber }!!
+        }
+        fun isOppositeDirection(dir: Direction, dir2: Direction) : Boolean {
+            return (2 + dir2.symbolNumber.toInt()) % 4 == dir.symbolNumber.toInt()
         }
     }
 }
