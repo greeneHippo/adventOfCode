@@ -1,4 +1,4 @@
-package nl.groen.day13
+package nl.groen.previousDays.day13
 
 import nl.groen.readLines
 import nl.groen.transposeListString

@@ -1,4 +1,4 @@
-package nl.groen.day12
+package nl.groen.previousDays.day12
 
 import nl.groen.readLines
 import org.apache.commons.lang3.StringUtils
@@ -37,7 +37,8 @@ private fun partOne (lines : List<String>): Long {
             it.row,
             it.row.split(".").toMutableList(),
             it.group,
-            0)}
+            0)
+    }
 
     modifiedRecords.forEach {
         it.sections = it.sections.filter { s -> s.length >= it.group.min()}.toMutableList()
@@ -147,7 +148,7 @@ private fun partOne (lines : List<String>): Long {
 
 private fun partOneCorrect (lines : List<String>): Long {
 
-    val result = lines.sumOf { it.split(" ").let { count(it.first(), it[1].split(",").map(String::toInt))}}
+    val result = lines.sumOf { it.split(" ").let { count(it.first(), it[1].split(",").map(String::toInt)) }}
     return result;
 }
 
@@ -169,7 +170,7 @@ private fun count(config: String, groups: List<Int>): Long {
 
 private fun partOneDP (lines : List<String>): Long {
 
-    val result = lines.sumOf { it.split(" ").let { countDP(it.first(), it[1].split(",").map(String::toInt), 0,0,0)}}
+    val result = lines.sumOf { it.split(" ").let { countDP(it.first(), it[1].split(",").map(String::toInt), 0,0,0) }}
     return result;
 }
 

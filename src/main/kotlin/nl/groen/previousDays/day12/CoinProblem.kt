@@ -1,4 +1,4 @@
-package nl.groen.day12
+package nl.groen.previousDays.day12
 
 fun count(coins: List<Int>, n: Int, sum :Int): Int {
 
