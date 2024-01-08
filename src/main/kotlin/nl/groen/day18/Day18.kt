@@ -1,9 +1,6 @@
 package nl.groen.day18
 
-import nl.groen.Direction
-import nl.groen.print2DArray
-import nl.groen.readLines
-import nl.groen.transpose
+import nl.groen.*
 import org.apache.commons.lang3.tuple.ImmutableTriple
 import kotlin.math.abs
 
@@ -90,12 +87,12 @@ private fun partOne (lines : List<String>): Long {
         iteration++
         //println("$iteration - $newTiles")
     } while (newTiles != 0)
-    //print2DArray(grid)
+    print2DArray(grid)
 
     return grid.map { return@map it.filter { status -> status.dug || status.partOfLoop }.count() }.reduce{acc: Int, i: Int -> acc + i}.toLong()
 }
 
-private fun printOrders(digOrderNeighboursList: MutableMap<DigOrder, Neighbours>) {
+private fun printOrders(digOrderNeighboursList: MutableMap<DigOrder, Neighbours>, reduceFactor: Int){
 
     val digOrders: Array<DigOrder?> = Array(digOrderNeighboursList.values.size){null}
 
@@ -111,7 +108,7 @@ private fun printOrders(digOrderNeighboursList: MutableMap<DigOrder, Neighbours>
     }
 
     val digOrderList = digOrders.toList()
-    printOrders(digOrderList.map { DigOrder(it!!.direction, it.steps / digOrderList.minOf { d -> d!!.steps * 5 }) })
+    printOrders(digOrderList.map { DigOrder(it!!.direction, it.steps / digOrderList.minOf { d -> d!!.steps * reduceFactor }) })
 
 }
 
@@ -164,12 +161,59 @@ private fun printOrders(digOrders: List<DigOrder>): Array<Array<Status>> {
         }
     }
     // Mark the tile to the right of the starting position as dug.
-    grid[yPositionDigger + 1][xPositionDigger + 1].dug = true
+    grid[yPositionDigger + 1][xPositionDigger - 1].dug = true
     grid = grid.filter { it.any { s -> s.partOfLoop } }.toTypedArray()
     grid = transpose(transpose(grid).filter { it.any { s -> s.partOfLoop } }.toTypedArray())
     print2DArray(grid)
 
     return grid
+}
+
+data class Vector(val start: Position, val end : Position)
+
+private fun partTwo_alternative (lines : List<String>): Long {
+
+    val digOrders = lines.map{return@map it.split(" ") }.map{return@map DigOrder(
+        Direction.getByNumber(it[2].substring(7, 8)),
+        it[2].substring(2,7).toLong(16)
+    )}
+
+    val vectors = digOrders.map{Vector(Position(0,0), Position(0,0))}.toMutableList()
+    var positionDigger = Position(0,0)
+
+    for (i in digOrders.indices) {
+
+        val order = digOrders[i]
+        val oldPosition = positionDigger.copy()
+
+        positionDigger = when (order.direction) {
+            Direction.NORTH -> Position(positionDigger.x, positionDigger.y + order.steps.toInt())
+            Direction.EAST -> Position(positionDigger.x + order.steps.toInt(), positionDigger.y)
+            Direction.SOUTH -> Position(positionDigger.x, positionDigger.y - order.steps.toInt())
+            Direction.WEST -> Position(positionDigger.x - order.steps.toInt(), positionDigger.y)
+        }
+
+        vectors[i] = Vector(oldPosition, positionDigger)
+    }
+
+    var result = 0L
+    val verticalVectors = vectors.filter{it.start.x == it.end.x}
+    val maxY = verticalVectors.maxOf { it.start.y}
+    for (y in verticalVectors.minOf { it.start.y}..verticalVectors.maxOf { it.start.y}) {
+        val matches = verticalVectors.filter{(y >= it.start.y && y <= it.end.y) || (y <= it.start.y && y >= it.end.y)}
+        val sections = matches.map { it.start.x }.sorted()
+        //println("$y van $maxY")
+
+        for (i in sections.indices) {
+            if (i.rem(2) == 1) {
+                result += sections[i]-sections[i-1]+1
+            }
+        }
+        println(result)
+    }
+
+    println(digOrders.sumOf { it.steps })
+    return result
 }
 
 private fun partTwo (lines : List<String>): Long {
@@ -186,20 +230,39 @@ private fun partTwo (lines : List<String>): Long {
     val borderSteps = digOrders.sumOf { it.steps }
     //digOrders.forEach { println("${it.direction} = ${it.steps}") }
     //printOrders(digOrders.map { DigOrder(it.direction, it.steps / minimum) })
-    //printOrders(digOrderNeighbours)
-    printOrders(digOrderNeighbours)
-    validate(digOrderNeighbours)
+    //printOrders(digOrderNeighbours,1)
+    //printOrders(digOrderNeighbours, 50)
+    validate(digOrderNeighbours, Long.MAX_VALUE, Long.MAX_VALUE)
 
     var size = 0L
     var i = 0
     do  {
 
-        val blobs = digOrderNeighbours.filter {
-            (4 + it.key.direction.symbolNumber.toInt() - it.value.previous.direction.symbolNumber.toInt()) % 4 == 1  &&
-            (4 + it.value.next.direction.symbolNumber.toInt() - it.key.direction.symbolNumber.toInt()) % 4 == 1
-        }
-        println("Totaal: ${digOrderNeighbours.size} - ${blobs.size}")
+        val blobs = digOrderNeighbours
+//            .map {
+//
+//                it.key.differenceWithNext =
+//                return@map it
+//            }
+            .filter {
+                (
+                    (4 + it.key.direction.symbolNumber.toInt() - it.value.previous.direction.symbolNumber.toInt()) % 4 == 1 &&
+                    (4 + it.value.next.direction.symbolNumber.toInt() - it.key.direction.symbolNumber.toInt()) % 4 == 1
+                ) ||
+                (
+                    (4 + it.key.direction.symbolNumber.toInt() - it.value.previous.direction.symbolNumber.toInt()) % 4 == 3 &&
+                    (4 + it.value.next.direction.symbolNumber.toInt() - it.key.direction.symbolNumber.toInt()) % 4 == 3
+                )
+            }.toSortedMap { o1, o2 -> o1.steps.toInt().compareTo(o2.steps.toInt()) }
 
+
+        println("Totaal: ${digOrderNeighbours.size} - ${blobs.size}")
+        if (i % 20 == 0) {
+            println(i)
+            //printOrders(digOrderNeighbours, 25)
+        }
+        val previousSumSouth = digOrderNeighbours.keys.filter { o -> o.direction == Direction.SOUTH }.sumOf { it.steps }
+        val previousSumEast = digOrderNeighbours.keys.filter { o -> o.direction == Direction.EAST }.sumOf { it.steps }
         run breaking@ {
             blobs.toList().forEach {
 
@@ -211,9 +274,10 @@ private fun partTwo (lines : List<String>): Long {
                 val next = it.second.next
 
                 val difference = previous.steps - next.steps
-
+                val sizeBefore = digOrderNeighbours.size
+                val reduce = ((4 + current.direction.symbolNumber.toInt() - previous.direction.symbolNumber.toInt()) % 4) == 1
                 if (difference < 0) {
-                    println("Merge current and previous into previous-previous")
+                    //println("Merge current and previous into previous-previous")
 
                     // Merge current and previous into previous-previous
                     val previous2 = previousNeighbours.previous
@@ -222,11 +286,17 @@ private fun partTwo (lines : List<String>): Long {
                     if (previous2.direction != current.direction) {
                         return@forEach
                     }
-                    size += previous.steps*(current.steps-1)
+
+                    if (reduce) {
+                        size += previous.steps*(current.steps-1)
+                    } else {
+                        size -= previous.steps*(current.steps+1)
+                    }
 
                     val newCurrentOrder = DigOrder(previous2.direction, previous2.steps + current.steps)
                     // Reduce steps of next
                     val newNextOrder = DigOrder(next.direction, abs(difference))
+
 
                     digOrderNeighbours[previous3] = Neighbours(digOrderNeighbours[previous3]!!.previous, newCurrentOrder)
                     digOrderNeighbours[newCurrentOrder] = Neighbours(previous3, newNextOrder)
@@ -238,8 +308,12 @@ private fun partTwo (lines : List<String>): Long {
                     digOrderNeighbours.remove(current)
                     digOrderNeighbours.remove(next)
 
+                    if (sizeBefore - digOrderNeighbours.size != 2) {
+                        throw Error("invalid")
+                    }
+
                 } else if (difference == 0L) {
-                    println("Merge previous & next into one order")
+                    //println("Merge previous & next into one order")
 
                     val previous2 = previousNeighbours.previous
                     val next2 = nextNeighbours.next
@@ -248,8 +322,11 @@ private fun partTwo (lines : List<String>): Long {
                     }
 
                     // Merge previous & next into one order
-                    size += previous.steps*(current.steps-1)
-
+                    if (reduce) {
+                        size += previous.steps*(current.steps-1)
+                    } else {
+                        size -= previous.steps*(current.steps+1)
+                    }
                     val previous3 = digOrderNeighbours[previous2]!!.previous
                     val next3 = digOrderNeighbours[next2]!!.next
 
@@ -264,8 +341,12 @@ private fun partTwo (lines : List<String>): Long {
                     digOrderNeighbours.remove(current)
                     digOrderNeighbours.remove(next)
                     digOrderNeighbours.remove(next2)
+
+                    if (sizeBefore - digOrderNeighbours.size != 4) {
+                        throw Error("invalid")
+                    }
                 } else if (difference > 0) {
-                    println("Merge current and next into next-next")
+                    //println("Merge current and next into next-next")
 
                     // Merge current and next into next-next
                     val next2 = nextNeighbours.next
@@ -274,8 +355,11 @@ private fun partTwo (lines : List<String>): Long {
                     if (next2.direction != current.direction) {
                         return@forEach
                     }
-                    size += next.steps*(current.steps-1)
-
+                    if (reduce) {
+                        size += next.steps*(current.steps-1)
+                    } else {
+                        size -= next.steps * (current.steps + 1)
+                    }
                     val newCurrentOrder = DigOrder(next2.direction, next2.steps + current.steps)
                     // Reduce steps of previous
                     val newPreviousOrder = DigOrder(previous.direction, abs(difference))
@@ -290,18 +374,20 @@ private fun partTwo (lines : List<String>): Long {
                     digOrderNeighbours.remove(next)
                     digOrderNeighbours.remove(next2)
 
+                    if (sizeBefore - digOrderNeighbours.size != 2) {
+                        throw Error("invalid")
+                    }
                 }
-                return@breaking
-                }
-        }
-        println(size)
-        validate(digOrderNeighbours)
-        i++
-        println(i)
 
+                println(reduce)
+                return@breaking
+            }
+        }
+        validate(digOrderNeighbours, previousSumEast, previousSumSouth)
+        i++
     }  while (digOrderNeighbours.size > 4 && i < 500)
 
-    printOrders(digOrderNeighbours)
+    printOrders(digOrderNeighbours, 1)
 
     val east = digOrderNeighbours.keys.filter { o -> o.direction == Direction.EAST }.sumOf { it.steps }
     val north = digOrderNeighbours.keys.filter { o -> o.direction == Direction.NORTH }.sumOf { it.steps }
@@ -311,7 +397,7 @@ private fun partTwo (lines : List<String>): Long {
     return size
 }
 
-fun validate(digOrderNeighbours: MutableMap<DigOrder, Neighbours>) {
+fun validate(digOrderNeighbours: MutableMap<DigOrder, Neighbours>, previousSumEast: Long, previousSumSouth: Long) {
 
     val east = digOrderNeighbours.keys.filter { o -> o.direction == Direction.EAST }.sumOf { it.steps }
     val west = digOrderNeighbours.keys.filter { o -> o.direction == Direction.WEST }.sumOf { it.steps }
@@ -321,12 +407,18 @@ fun validate(digOrderNeighbours: MutableMap<DigOrder, Neighbours>) {
     if (east != west || north != south) {
         throw Error("invalid orders east: ${east}, west: ${west}, north: ${north}, south: ${south} ")
     }
+    if (east > previousSumEast) {
+        throw Error("Growth in east: ${east}, previousSumEast: ${previousSumEast}  ")
+    }
+    if (south > previousSumSouth) {
+        throw Error("Growth in south: ${south}, previousSumSouth: ${previousSumSouth}  ")
+    }
 }
 
 fun main(args : Array<String>) {
 
-    val lines = readLines("test_CW")
-//    println(partOne(lines))
+    val lines = readLines("day18")
+    //println(partOne(lines))
     println(partTwo(lines))
 
 }

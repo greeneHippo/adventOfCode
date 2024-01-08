@@ -1,10 +1,10 @@
 package nl.groen
 
+import java.time.Instant
+import java.time.ZoneId
 import java.util.stream.Collectors
 import java.util.stream.IntStream
-import kotlin.io.path.Path
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.readLines
+import kotlin.io.path.*
 
 fun readLines (input : String): List<String> {
 
@@ -114,11 +114,16 @@ fun print2DList(input: List<List<String>>) {
     }
 }
 fun <T> print2DArray(input: Array<Array<T>>) {
-    println("-------------------------------------------")
+    val time = Instant.now().atZone(ZoneId.systemDefault())
+    //val fullPath = Path("src\\main\\kotlin\\input\\${input.size}_${time.minute}_${time.second}_output.txt").absolutePathString()
+    val fullPath = Path("src\\main\\kotlin\\input\\output.txt").absolutePathString()
+    val writer = Path(fullPath)
+    writer.writeText("")
     input.forEach {
         it.forEach { s ->
-            print(s)
+            writer.appendText(s.toString())
         }
-        println()
+        writer.appendText(System.lineSeparator())
     }
+
 }
