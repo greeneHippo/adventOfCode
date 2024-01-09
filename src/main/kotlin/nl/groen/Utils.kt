@@ -125,5 +125,44 @@ fun <T> print2DArray(input: Array<Array<T>>) {
         }
         writer.appendText(System.lineSeparator())
     }
+}
 
+fun findLCMOfListOfNumbers(numbers: List<Long>): Long {
+    var result = numbers[0]
+    for (i in 1 until numbers.size) {
+        result = calculateLCM(result, numbers[i])
+    }
+    return result
+}
+
+fun calculateLCM(a: Long, b: Long): Long {
+    val larger = if (a > b) a else b
+    val maxLcm = a * b
+    var lcm = larger
+    while (lcm <= maxLcm) {
+        if (lcm % a == 0L && lcm % b == 0L) {
+            return lcm
+        }
+        lcm += larger
+    }
+    return maxLcm
+}
+
+fun calculateLCMOfListOfNumbers(numbers: List<Long>): Long {
+    var result = 1L
+    for (number in numbers) {
+        result = (result * number) / calculateGCD(result, number)
+    }
+    return result
+}
+
+fun calculateGCD(a: Long, b: Long): Long {
+    var num1 = a
+    var num2 = b
+    while (num2 != 0L) {
+        val temp = num2
+        num2 = num1 % num2
+        num1 = temp
+    }
+    return num1
 }
