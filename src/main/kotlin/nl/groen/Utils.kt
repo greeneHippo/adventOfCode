@@ -21,11 +21,11 @@ fun readLines (input : String): List<String> {
 data class MoveAction(val position: Position, val direction: Direction)
 data class Position(val x: Int, val y: Int)
 
-fun parseGrid(lines: List<String>, costGrid: MutableMap<Position, Int>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>) {
+fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>, transform: (String) -> T) {
 
     lines.forEachIndexed { y, s ->
         s.forEachIndexed { x, c ->
-            costGrid[Position(x, y)] = c.uppercase().toInt()
+            costGrid[Position(x, y)] = transform.invoke(c.uppercase())
             if (neighbourGrid[Position(x, y)] == null) {
                 neighbourGrid[Position(x, y)] = mutableListOf()
             }

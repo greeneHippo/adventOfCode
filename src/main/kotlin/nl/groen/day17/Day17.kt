@@ -14,7 +14,7 @@ fun partOne (lines : List<String>): Long {
     lines.forEach { println(it) }
     val costGrid : MutableMap<Position, Int> = mutableMapOf()
     val neighbourGrid: MutableMap<Position, MutableList<MoveAction>> = mutableMapOf()
-    parseGrid(lines, costGrid, neighbourGrid)
+    parseGrid(lines, costGrid, neighbourGrid) { s: String -> s.toInt() }
 
     return calculateMinimum(costGrid, neighbourGrid, Position(lines.first().length-1, lines.size-1), 0,3).toLong()
 
@@ -24,7 +24,7 @@ private fun partTwo (lines : List<String>): Long {
 
     val costGrid : MutableMap<Position, Int> = mutableMapOf()
     val neighbourGrid : MutableMap<Position, MutableList<MoveAction>> = mutableMapOf()
-    parseGrid(lines, costGrid, neighbourGrid)
+    parseGrid(lines, costGrid, neighbourGrid) { s: String -> s.toInt() }
 
     return calculateMinimum(costGrid, neighbourGrid, Position(lines.first().length-1, lines.size-1), 4,10).toLong()
 }
