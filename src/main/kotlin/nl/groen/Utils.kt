@@ -19,7 +19,9 @@ fun readLines (input : String): List<String> {
 }
 
 data class MoveAction(val position: Position, val direction: Direction)
-data class Position(val x: Int, val y: Int)
+data class Position(val x: Int, val y: Int, val z: Int = -1) {
+
+}
 
 fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>, transform: (String) -> T) {
 
