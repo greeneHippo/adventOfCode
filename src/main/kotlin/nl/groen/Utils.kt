@@ -27,7 +27,7 @@ fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighb
 
     lines.forEachIndexed { y, s ->
         s.forEachIndexed { x, c ->
-            costGrid[Position(x, y)] = transform.invoke(c.uppercase())
+            costGrid[Position(x, y)] = transform.invoke(c.toString())
             if (neighbourGrid[Position(x, y)] == null) {
                 neighbourGrid[Position(x, y)] = mutableListOf()
             }
