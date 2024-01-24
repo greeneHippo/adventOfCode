@@ -6,17 +6,22 @@ import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.io.path.*
 
-fun readLines (input : String): List<String> {
+fun readInput (input : String): List<String> {
 
     try {
-        val fullPath = Path("src\\main\\kotlin\\input\\" + input + "_input.txt").absolutePathString()
+        val fullPath = Path("src\\main\\kotlin\\input\\$input.txt").absolutePathString()
         return Path(fullPath).readLines()
     } catch (e: Exception) {
     }
 
-    val fullPath = Path("src\\main\\kotlin\\input\\old\\" + input + "_input.txt").absolutePathString()
+    val fullPath = Path("src\\main\\kotlin\\input\\old\\$input.txt").absolutePathString()
     return Path(fullPath).readLines()
 }
+
+/**
+ * The cleaner shorthand for printing output.
+ */
+fun Any?.println() = println(this)
 
 data class MoveAction(val position: Position, val direction: Direction)
 data class Position(val x: Int, val y: Int, val z: Int = -1) {

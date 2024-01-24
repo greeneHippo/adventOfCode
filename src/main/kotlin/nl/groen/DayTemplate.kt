@@ -1,20 +1,24 @@
 package nl.groen
 
-private fun partOne (lines : List<String>): Long {
-
-    return 0L
-}
-
-private fun partTwo (lines : List<String>): Long {
-
-    return 0L
-}
-
 fun main(args : Array<String>) {
 
-    val lines = readLines("test")
-    println(partOne(lines))
-    println(partTwo(lines))
+    fun part1 (input : List<String>): Long {
+
+        return input.size.toLong()
+    }
+
+    fun part2 (input : List<String>): Long {
+
+        return input.size.toLong()
+    }
+
+    // test if implementation meets criteria from the description, like:
+    val testInput = readInput("Day01_test")
+    check(part1(testInput) == 1L)
+
+    val input = readInput("Day01")
+    part1(input).println()
+    part2(input).println()
 
 }
 
