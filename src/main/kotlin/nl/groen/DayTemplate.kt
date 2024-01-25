@@ -14,10 +14,12 @@ fun main() {
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1L)
-
     val input = readInput("Day01")
+
+    check(part1(testInput) == 1L)
     part1(input).println()
+
+    check(part2(testInput) == 1L)
     part2(input).println()
 
 }
