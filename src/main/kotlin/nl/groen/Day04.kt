@@ -1,13 +1,13 @@
 package nl.groen
 
-data class Assignment(val low :Int, val high :Int)
+data class Assignment(val line: Int, val low :Int, val high :Int)
 fun main() {
 
     fun part1 (input : List<String>): Long {
 
         val cleaningPairs = input.map {
             val (first, second, third, fourth) = it.split(",", "-").map { s -> s.toInt() }
-            Pair(Assignment(first, second), Assignment(third, fourth))
+            Pair(Assignment(0, first, second), Assignment(0, third, fourth))
         }
 
         val overlapInAssignments = cleaningPairs.filter {
@@ -22,7 +22,7 @@ fun main() {
 
         val cleaningPairs = input.map {
             val (first, second, third, fourth) = it.split(",", "-").map { s -> s.toInt() }
-            Pair(Assignment(first, second), Assignment(third, fourth))
+            Pair(Assignment(0, first, second), Assignment(0, third, fourth))
         }
 
         val overlapInAssignments = cleaningPairs.filter {
