@@ -1,4 +1,7 @@
-package nl.groen
+package nl.groen.year2024
+
+import nl.groen.println
+import nl.groen.readInput
 
 fun main() {
 
@@ -13,8 +16,8 @@ fun main() {
     }
 
     // test if implementation meets criteria from the description, like:
-    val testInput = readInput("2022","Day01_test")
-    val input = readInput("2022","Day01")
+    val testInput = readInput("2024","Day01_test")
+    val input = readInput("2024","Day01")
 
     check(part1(testInput) == 1L)
     part1(input).println()

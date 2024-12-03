@@ -7,9 +7,13 @@ import java.util.stream.IntStream
 import kotlin.io.path.*
 
 fun readInput (input : String): List<String> {
+    return readInput("2022", input)
+}
+
+fun readInput (year : String = "2022", input : String): List<String> {
 
     try {
-        val fullPath = Path("src\\main\\kotlin\\input\\$input.txt").absolutePathString()
+        val fullPath = Path("src\\main\\kotlin\\input\\year$year\\$input.txt").absolutePathString()
         return Path(fullPath).readLines()
     } catch (e: Exception) {
     }
