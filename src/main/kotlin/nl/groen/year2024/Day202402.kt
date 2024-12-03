@@ -5,13 +5,27 @@ import nl.groen.readInput
 
 fun main() {
 
-    fun part1 (input : List<String>): Long {
+    class Report(val levels : List<Int>) {
 
-        val ints = input.map { it.split(" ").map { it.toInt() } }
-        var previous : Int = 0
-        val diffs = ints.map {
-            val diffs : MutableList<Int> = mutableListOf()
-            it.foldIndexed(diffs) { index, acc, int ->
+        fun isReportSafe(tolerateSingleLevel: Boolean): Boolean {
+
+            val allLevels = isSafe(levels)
+            if (!tolerateSingleLevel) return allLevels
+
+            for (i in levels.indices) {
+                val isSafe = isSafe(levels.filterIndexed { index, _ -> index != i  })
+                if (isSafe) return true
+
+            }
+
+            return false
+
+        }
+
+        private fun isSafe(input: List<Int>): Boolean {
+            var previous = 0
+            val diffs: MutableList<Int> = mutableListOf()
+            input.foldIndexed(diffs) { index, acc, int ->
                 if (index == 0) {
                     previous = int
                 } else {
@@ -20,34 +34,28 @@ fun main() {
                 }
                 acc
             }
+
+            return diffs.min() >= -3 &&
+                    diffs.max() <= 3 &&
+                    !diffs.contains(0) &&
+                    (diffs.max() < 0 || diffs.min() > 0)
         }
-
-        val filtered = diffs.filter { it.min() >= -3 && it.max() <= 3 && !it.contains(0)}
-        val filtered2 = filtered.filter { it.max() < 0 || it.min() > 0 }
-
-        return filtered2.size.toLong()
     }
 
-    class Report(val levels : List<Int>) {
+    fun part1 (input : List<String>): Long {
 
-        var isIncrease : Boolean = true
-        var hasSkippedOne : Boolean = false
+        val reports = input.map { Report(it.split(" ").map { it.toInt()})}
 
-        fun isSafe(): Boolean {
-
-            levels.forEachIndexed { index, level ->  } {
-                if (index == 0) return@forEach
-                val diff = level - levels[index-1]
-            }
-        }
+        val result = reports.filter { it.isReportSafe(false) }
+        return result.count().toLong()
     }
 
     fun part2 (input : List<String>): Long {
 
         val reports = input.map { Report(it.split(" ").map { it.toInt()})}
 
-
-        return reports.filter { it.isSafe() }.count().toLong()
+        val result = reports.filter { it.isReportSafe(true) }
+        return result.count().toLong()
     }
 
     // test if implementation meets criteria from the description, like:
