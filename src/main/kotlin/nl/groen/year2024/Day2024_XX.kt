@@ -16,8 +16,8 @@ fun main() {
     }
 
     // test if implementation meets criteria from the description, like:
-    val testInput = readInput("2024","Day01_test")
-    val input = readInput("2024","Day01")
+    val testInput = readInput("2024","DayXX_test")
+    val input = readInput("2024","DayXX")
 
     check(part1(testInput) == 1L)
     part1(input).println()
