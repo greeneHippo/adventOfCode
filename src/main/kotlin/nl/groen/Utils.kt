@@ -92,6 +92,15 @@ fun transposeListString(input: List<String>): List<String> {
 enum class Direction(val symbolULDR: String, val symbolNumber: String) {
    NORTH("U", "3"), EAST("R", "0"), SOUTH("D", "1"), WEST("L", "2");
 
+    fun turnRight(): Direction {
+        when (this) {
+            NORTH -> return EAST
+            EAST -> return SOUTH
+            SOUTH -> return WEST
+            WEST -> return NORTH
+        }
+    }
+
     companion object {
         fun getByULDR(input: String): Direction {
             return Direction.entries.firstOrNull { part -> input == part.symbolULDR }!!
