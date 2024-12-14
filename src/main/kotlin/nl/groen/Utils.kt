@@ -28,9 +28,8 @@ fun readInput (year : String = "2022", input : String): List<String> {
 fun Any?.println() = println(this)
 
 data class MoveAction(val position: Position, val direction: Direction)
-data class Position(val x: Int, val y: Int, val z: Int = -1) {
-
-}
+data class Position(val x: Int, val y: Int, val z: Int = -1)
+data class PositionLong(val x: Long, val y: Long, val z: Long = -1)
 
 fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>, transform: (String) -> T) {
 
