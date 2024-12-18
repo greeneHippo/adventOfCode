@@ -1,6 +1,5 @@
 package nl.groen
 
-import nl.groen.year2024.Type
 import java.time.Instant
 import java.time.ZoneId
 import java.util.stream.Collectors
