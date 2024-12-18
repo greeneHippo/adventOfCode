@@ -1,10 +1,15 @@
 package nl.groen
 
+import nl.groen.year2024.Type
 import java.time.Instant
 import java.time.ZoneId
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.io.path.*
+
+data class MoveAction(val position: Position, val direction: Direction)
+data class Position(val x: Int, val y: Int, val z: Int = -1)
+data class PositionLong(val x: Long, val y: Long, val z: Long = -1)
 
 fun readInput (input : String): List<String> {
     return readInput("2022", input)
@@ -27,9 +32,19 @@ fun readInput (year : String = "2022", input : String): List<String> {
  */
 fun Any?.println() = println(this)
 
-data class MoveAction(val position: Position, val direction: Direction)
-data class Position(val x: Int, val y: Int, val z: Int = -1)
-data class PositionLong(val x: Long, val y: Long, val z: Long = -1)
+
+fun groupStringsOnEmptyLine(input: List<String>): MutableList<MutableList<String>> {
+    val groupStrings: MutableList<MutableList<String>> = mutableListOf(mutableListOf())
+    input.fold(groupStrings) { acc, s ->
+        if (s.isEmpty()) {
+            acc.add(mutableListOf())
+        } else {
+            acc.last().add(s)
+        }
+        acc
+    }
+    return groupStrings
+}
 
 fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>, transform: (String) -> T) {
 
@@ -143,6 +158,16 @@ fun <T> print2DArray(input: Array<Array<T>>) {
             writer.appendText(s.toString())
         }
         writer.appendText(System.lineSeparator())
+    }
+}
+
+fun <T> printGridOfPoints(grid :MutableMap<Position, T>) {
+
+    for (y in grid.keys.minOf{it.y} .. grid.keys.maxOf{it.y}) {
+        for (x in grid.keys.minOf{it.x} .. grid.keys.maxOf{it.x}) {
+            print(grid[Position(x, y)].toString())
+        }
+        println("")
     }
 }
 

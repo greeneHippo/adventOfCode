@@ -1,7 +1,6 @@
 package nl.groen.year2024
 
 import nl.groen.PositionLong
-import nl.groen.print2DList
 import nl.groen.println
 import nl.groen.readInput
 import java.util.stream.IntStream
