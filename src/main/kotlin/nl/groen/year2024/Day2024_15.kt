@@ -20,7 +20,7 @@ fun printWarehouse(area :MutableMap<Position,Type>, positionRobot :Position) {
 }
 fun main() {
 
-    fun parseMoves(strings: MutableList<MutableList<String>>) = strings[1].joinToString(separator = "").toList().map {
+    fun parseMoves(strings: List<List<String>>) = strings[1].joinToString(separator = "").toList().map {
         val direction = when (it.toString()) {
             "^" -> Direction.NORTH
             ">" -> Direction.EAST

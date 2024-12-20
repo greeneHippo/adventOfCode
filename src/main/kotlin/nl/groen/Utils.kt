@@ -33,7 +33,7 @@ fun readInput (year : String = "2022", input : String): List<String> {
 fun Any?.println() = println(this)
 
 
-fun groupStringsOnEmptyLine(input: List<String>): MutableList<MutableList<String>> {
+fun groupStringsOnEmptyLine(input: List<String>): List<List<String>> {
     val groupStrings: MutableList<MutableList<String>> = mutableListOf(mutableListOf())
     input.fold(groupStrings) { acc, s ->
         if (s.isEmpty()) {
