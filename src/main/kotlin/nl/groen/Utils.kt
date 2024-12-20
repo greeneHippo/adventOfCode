@@ -5,6 +5,7 @@ import java.time.ZoneId
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.io.path.*
+import kotlin.math.abs
 
 data class MoveAction(val position: Position, val direction: Direction)
 data class Position(val x: Int, val y: Int, val z: Int = -1)
@@ -123,6 +124,9 @@ enum class Direction(val symbolULDR: String, val symbolNumber: String) {
         }
         fun isOppositeDirection(dir: Direction, dir2: Direction) : Boolean {
             return (2 + dir2.symbolNumber.toInt()) % 4 == dir.symbolNumber.toInt()
+        }
+        fun isNextDirection(dir: Direction, dir2: Direction) : Boolean {
+            return abs((dir.symbolNumber.toInt() - dir2.symbolNumber.toInt())) % 2 == 1
         }
     }
 }
