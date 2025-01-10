@@ -213,3 +213,14 @@ fun calculateGCD(a: Long, b: Long): Long {
     }
     return num1
 }
+
+fun power(baseVal: Long, exponentVal: Long): Long {
+    var exponent = exponentVal
+    var result: Long = 1
+
+    while (exponent != 0L) {
+        result *= baseVal
+        --exponent
+    }
+    return result
+}
