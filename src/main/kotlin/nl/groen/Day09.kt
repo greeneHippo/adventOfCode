@@ -76,6 +76,7 @@ fun main() {
                     Direction.EAST ->  IntRange(1, motion.steps).map { i -> Pair(Position(acc.x+i-1, acc.y), Position(acc.x+i, acc.y))}
                     Direction.SOUTH ->  IntRange(1, motion.steps).map { i -> Pair(Position(acc.x, acc.y-i+1), Position(acc.x, acc.y-i))}
                     Direction.WEST ->  IntRange(1, motion.steps).map { i -> Pair(Position(acc.x-i+1, acc.y), Position(acc.x-i, acc.y))}
+                    else -> throw IllegalArgumentException("Unknown direction")
                 }
                 positionsHeads.forEach {
                     if (shouldTailMove(it.second, positionTail)) {
@@ -108,6 +109,7 @@ fun main() {
                     Direction.EAST ->  IntRange(1, motion.steps).map { i -> Pair(Position(acc.x+i-1, acc.y), Position(acc.x+i, acc.y))}
                     Direction.SOUTH ->  IntRange(1, motion.steps).map { i -> Pair(Position(acc.x, acc.y-i+1), Position(acc.x, acc.y-i))}
                     Direction.WEST ->  IntRange(1, motion.steps).map { i -> Pair(Position(acc.x-i+1, acc.y), Position(acc.x-i, acc.y))}
+                    else -> throw IllegalArgumentException("Unknown direction")
                 }
                 positionsHeads.forEach {
                     if (shouldTailMove(it.second, positionTail)) {

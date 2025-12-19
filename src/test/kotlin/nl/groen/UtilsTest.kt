@@ -14,4 +14,41 @@ class UtilsTest {
 
 
     }
+
+    @Test
+    fun testRanges() {
+        val ranges = listOf(
+            LongRange(0, 1),
+            LongRange(4, 7),
+            LongRange(3, 8)
+        )
+
+        val expected = listOf(
+            LongRange(0, 1),
+            LongRange(3, 8)
+        )
+        val result = ranges.mergeRanges()
+
+        assertEquals(expected, result)
+
+    }
+
+    @Test
+    fun testRanges2() {
+        val ranges = listOf(
+            LongRange(3, 5),
+            LongRange(10, 14),
+            LongRange(16, 19),
+            LongRange(12, 20)
+        )
+
+        val expected = listOf(
+            LongRange(3, 5),
+            LongRange(10, 20)
+        )
+        val result = ranges.mergeRanges()
+
+        assertEquals(expected, result)
+
+    }
 }

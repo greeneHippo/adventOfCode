@@ -193,6 +193,7 @@ private fun partTwo_alternative (lines : List<String>): Long {
             Direction.EAST -> Position(positionDigger.x + order.steps.toInt(), positionDigger.y)
             Direction.SOUTH -> Position(positionDigger.x, positionDigger.y - order.steps.toInt())
             Direction.WEST -> Position(positionDigger.x - order.steps.toInt(), positionDigger.y)
+            else -> throw IllegalArgumentException("Unknown direction")
         }
 
         vectors[i] = Vector(oldPosition, positionDigger)

@@ -51,6 +51,7 @@ fun main() {
                     direction
                 )
             )
+            else -> throw IllegalArgumentException("Unknown direction")
         }
     }
 
