@@ -1,7 +1,5 @@
 package nl.groen
 
-import java.time.Instant
-import java.time.ZoneId
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.io.path.*
@@ -36,17 +34,18 @@ fun Any?.println() = println(this)
 fun groupStringsOnEmptyLine(input: List<String>): List<List<String>> {
     val groupStrings: MutableList<MutableList<String>> = mutableListOf(mutableListOf())
     input.fold(groupStrings) { acc, s ->
-        if (s.isEmpty()) {
+        val trimmed = s.trim()
+        if (trimmed.isEmpty()) {
             acc.add(mutableListOf())
         } else {
-            acc.last().add(s)
+            acc.last().add(trimmed)
         }
         acc
     }
     return groupStrings
 }
 
-fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>, transform: (String) -> T) {
+fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighbourGrid: MutableMap<Position, MutableList<MoveAction>>, addCorners:Boolean = false, transform: (String) -> T) {
 
     lines.forEachIndexed { y, s ->
         s.forEachIndexed { x, c ->
@@ -66,6 +65,24 @@ fun <T> parseGrid(lines: List<String>, costGrid: MutableMap<Position, T>, neighb
             if (y != 0) {
                 neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x, y - 1), Direction.NORTH))
             }
+
+            if (!addCorners) {
+                return@forEachIndexed
+            }
+
+            if (x != s.length - 1 && y != lines.size - 1) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x + 1, y + 1), Direction.SE))
+            }
+            if (x != s.length - 1 && y != 0) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x + 1, y - 1), Direction.NE))
+            }
+            if (x != 0 && y != lines.size - 1) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x - 1, y + 1), Direction.SW))
+            }
+            if (x != 0 && y != 0) {
+                neighbourGrid[Position(x, y)]!!.add(MoveAction(Position(x - 1, y - 1), Direction.NW))
+            }
+
         }
     }
 }
@@ -95,16 +112,23 @@ inline fun <reified T> transpose(twoDArray: Array<Array<T>>): Array<Array<T>> {
     }
 }
 
-fun transposeListString(input: List<String>): List<String> {
+fun List<String>.transposeListString(): List<String> {
 
-    val intrange = IntRange(1, input[0].length)
-    val transposed = transpose(input.map { it.split("").slice(intrange) }.toList())
+    val intrange = IntRange(1, this[0].length)
+    val transposed = transpose(this.map { it.split("").slice(intrange) }.toList())
     return transposed.map { it.reduce{acc, s -> acc + s} }
 
 }
 
 enum class Direction(val symbolULDR: String, val symbolNumber: String) {
-   NORTH("U", "3"), EAST("R", "0"), SOUTH("D", "1"), WEST("L", "2");
+    NORTH("U", "3"),
+    EAST("R", "0"),
+    SOUTH("D", "1"),
+    WEST("L", "2"),
+    NE("NE", "5"),
+    SE("SE", "6"),
+    NW("NW", "7"),
+    SW("SW", "8");
 
     fun turnRight(): Direction {
         when (this) {
@@ -112,6 +136,7 @@ enum class Direction(val symbolULDR: String, val symbolNumber: String) {
             EAST -> return SOUTH
             SOUTH -> return WEST
             WEST -> return NORTH
+            else -> {throw IllegalArgumentException("Unknown direction $this")}
         }
     }
 
@@ -151,7 +176,7 @@ fun print2DList(input: List<List<String>>) {
     }
 }
 fun <T> print2DArray(input: Array<Array<T>>) {
-    val time = Instant.now().atZone(ZoneId.systemDefault())
+//    val time = Instant.now().atZone(ZoneId.systemDefault())
     //val fullPath = Path("src\\main\\kotlin\\input\\${input.size}_${time.minute}_${time.second}_output.txt").absolutePathString()
     val fullPath = Path("src\\main\\kotlin\\input\\output.txt").absolutePathString()
     val writer = Path(fullPath)
@@ -223,4 +248,29 @@ fun power(baseVal: Long, exponentVal: Long): Long {
         --exponent
     }
     return result
+}
+
+fun List<LongRange>.mergeRanges() : List<LongRange> {
+    val sorted = this.sortedBy { it.start }
+    val merged = mutableListOf<LongRange>()
+
+    for (interval in sorted) {
+        // Check if the new range complete falls after last range
+        if (merged.isEmpty() || merged.last().endInclusive < interval.start) {
+            merged.add(interval)
+            continue
+        }
+
+        // Check if interval is completely overlapped by last range
+        if (merged.last().endInclusive > interval.endInclusive) {
+            // do nothing
+            continue
+        }
+
+        // The range overlaps with last range. Modify the last range
+        val oldLast = merged.removeLast()
+        merged.add(LongRange(oldLast.start, maxOf(merged.last().endInclusive, interval.endInclusive)))
+    }
+
+    return merged
 }

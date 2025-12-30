@@ -43,7 +43,7 @@ private fun determineReflectionOfPattern(pattern: List<String>, ignoreReflection
         return Pair(indexHorizonalReflection, null)
     }
 
-    val patternTransposed = transposeListString(pattern)
+    val patternTransposed = pattern.transposeListString()
     val indexVerticalReflection = determineReflectionIndex(patternTransposed, ignoreReflection.second)
     if (indexVerticalReflection != null) {
         return Pair(null, indexVerticalReflection)

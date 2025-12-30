@@ -105,7 +105,7 @@ private fun partTwo (lines : List<String>): Long {
 }
 
 
-fun main(args : Array<String>) {
+fun main() {
 
     val lines = readInput("day14")
     //println(partOne(lines))
