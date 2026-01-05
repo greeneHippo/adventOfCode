@@ -41,16 +41,16 @@ fun main() {
             Type.BOX -> {
                 if (moveNextBox(next, area, neighbourGrid)) {
                     area[next.position] = Type.BOX
-                    return true
+                    true
                 } else {
-                    return false
+                    false
                 }
             }
             Type.ROBOT -> {error("not possible")}
             Type.EMPTY -> {
                 area[next.position] = Type.BOX
                 area[move.position] = Type.EMPTY
-                return true
+                true
             }
         }
     }

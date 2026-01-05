@@ -63,7 +63,7 @@ class UtilsTest {
         assertFalse(
             doIntersect(
                 Pair(PositionDouble(0.toDouble(),0.toDouble()), PositionDouble(2.toDouble(),0.toDouble())),
-                Pair(PositionDouble(3.toDouble(), -1.toDouble()), PositionDouble(3.toDouble(), 1.toDouble()))
+                Pair(PositionDouble(3.toDouble(), (-1).toDouble()), PositionDouble(3.toDouble(), 1.toDouble()))
             )
         )
         assertTrue(

@@ -35,10 +35,10 @@ private fun partOne (lines : List<String>): Long {
     return seeds.min()
 }
 
-private fun partTwo (lines : List<String>): Long? {
+private fun partTwo (lines : List<String>): Long {
 
     var seedsRanges = arrayListOf<LongRange>()
-    val seedNumbers = StringUtils.splitByWholeSeparator(StringUtils.removeStart(lines[0], "seeds: "), " ").toList();
+    val seedNumbers = StringUtils.splitByWholeSeparator(StringUtils.removeStart(lines[0], "seeds: "), " ").toList()
 
     for (i in seedNumbers.indices) {
 
@@ -81,7 +81,7 @@ private fun partTwo (lines : List<String>): Long? {
 
         for (mapper in mappers.reversed()) {
 
-            mapper.longRangeLines = mapper.mapLines.map { return@map MapLine(it[0], LongRange(it[1], it[1]+it[2])) }.toCollection(ArrayList<MapLine>())
+            mapper.longRangeLines = mapper.mapLines.map { return@map MapLine(it[0], LongRange(it[1], it[1]+it[2])) }.toCollection(ArrayList())
             numberInPreviousMapper = mapper.mapBack(numberInPreviousMapper)
         }
 

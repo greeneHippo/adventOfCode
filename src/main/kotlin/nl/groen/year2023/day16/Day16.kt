@@ -30,7 +30,7 @@ private fun partTwo (lines : List<String>): Long {
     expandedLines = expandedLines.map { return@map Mirror.NONE.symbol + it + Mirror.NONE.symbol }.toMutableList()
 
     val energizedTilesEachConfiguration :ArrayList<Long> = arrayListOf()
-    var result = 0L
+    var result: Long
     for (i in 0..<expandedLines.size) {
         var points = expandedLines.map { return@map it.map { s -> return@map Point(Mirror.get(s), hashMapOf()) } }
 

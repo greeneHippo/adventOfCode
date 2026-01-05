@@ -5,7 +5,7 @@ import nl.groen.transposeListString
 
 private fun partOne (lines : List<String>): Long {
 
-    val emptyLines = lines.mapIndexedNotNull() { index, s ->
+    val emptyLines = lines.mapIndexedNotNull { index, s ->
             if (s.isEmpty()) {
                 return@mapIndexedNotNull index
             } else {
@@ -88,7 +88,7 @@ private fun determineReflectionIndex(pattern: List<String>, ignoreIndex: Int?) =
         }
     }
     .filter { ignoreIndex == null || ignoreIndex != it }
-    .firstOrNull() {
+    .firstOrNull {
         if (it == 1 || it == pattern.size - 1) {
             true
         } else {
@@ -99,7 +99,7 @@ private fun determineReflectionIndex(pattern: List<String>, ignoreIndex: Int?) =
 fun isReflectionInOtherLines(pattern: List<String>, inputPair: Pair<Int, Int>): Boolean {
 
     if (inputPair.first == -1 || inputPair.second == pattern.size) {
-        return true;
+        return true
     }
     if (pattern[inputPair.first] == pattern[inputPair.second]) {
         return isReflectionInOtherLines(pattern, Pair(inputPair.first-1, inputPair.second+1))
@@ -110,7 +110,7 @@ fun isReflectionInOtherLines(pattern: List<String>, inputPair: Pair<Int, Int>): 
 
 private fun partTwo (lines : List<String>): Long {
 
-    val emptyLines = lines.mapIndexedNotNull() { index, s ->
+    val emptyLines = lines.mapIndexedNotNull { index, s ->
         if (s.isEmpty()) {
             return@mapIndexedNotNull index
         } else {

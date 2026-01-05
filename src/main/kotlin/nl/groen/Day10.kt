@@ -24,7 +24,7 @@ fun main() {
 
         return relevantCycles.map {cycle ->
             val value = instructionSimulation.filter { it.finishesOnCycle < cycle }.last().newValue
-            println("$cycle -> ${value}")
+            println("$cycle -> $value")
             cycle * value
         }.sum().toLong()
 

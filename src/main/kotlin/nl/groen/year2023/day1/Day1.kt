@@ -13,7 +13,7 @@ fun main(args : Array<String>) {
 
     var digits = lines.stream().map{
         var characters = it.toCharArray()
-        var twoDigitString = CharArray(2);
+        var twoDigitString = CharArray(2)
         twoDigitString[0] = extractFistDigit(characters)
         twoDigitString[1] = extractLastDigit(characters)
 
@@ -62,31 +62,31 @@ private fun extractLastDigit(characters: CharArray): Char {
 
 private fun digitInWord(i: Int, string: String): Char? {
     if (StringUtils.equals("one", StringUtils.substring(string, i, i+3))) {
-        return "1".toCharArray()[0];
+        return "1".toCharArray()[0]
     }
     if (StringUtils.equals("two", StringUtils.substring(string, i, i+3))) {
-        return "2".toCharArray()[0];
+        return "2".toCharArray()[0]
     }
     if (StringUtils.equals("three", StringUtils.substring(string, i, i+5))) {
-        return "3".toCharArray()[0];
+        return "3".toCharArray()[0]
     }
     if (StringUtils.equals("four", StringUtils.substring(string, i, i+4))) {
-        return "4".toCharArray()[0];
+        return "4".toCharArray()[0]
     }
     if (StringUtils.equals("five", StringUtils.substring(string, i, i+4))) {
-        return "5".toCharArray()[0];
+        return "5".toCharArray()[0]
     }
     if (StringUtils.equals("six", StringUtils.substring(string, i, i+3))) {
-        return "6".toCharArray()[0];
+        return "6".toCharArray()[0]
     }
     if (StringUtils.equals("seven", StringUtils.substring(string, i, i+5))) {
-        return "7".toCharArray()[0];
+        return "7".toCharArray()[0]
     }
     if (StringUtils.equals("eight", StringUtils.substring(string, i, i+5))) {
-        return "8".toCharArray()[0];
+        return "8".toCharArray()[0]
     }
     if (StringUtils.equals("nine", StringUtils.substring(string, i, i+4))) {
-        return "9".toCharArray()[0];
+        return "9".toCharArray()[0]
     }
 
     return null
@@ -94,31 +94,31 @@ private fun digitInWord(i: Int, string: String): Char? {
 
 fun digitInWordRecursive(i: Int, string: String): Char? {
     if (StringUtils.equals("one", StringUtils.substring(string, i-3, i))) {
-        return "1".toCharArray()[0];
+        return "1".toCharArray()[0]
     }
     if (StringUtils.equals("two", StringUtils.substring(string, i-3, i))) {
-        return "2".toCharArray()[0];
+        return "2".toCharArray()[0]
     }
     if (StringUtils.equals("three", StringUtils.substring(string, i-5, i))) {
-        return "3".toCharArray()[0];
+        return "3".toCharArray()[0]
     }
     if (StringUtils.equals("four", StringUtils.substring(string, i-4, i))) {
-        return "4".toCharArray()[0];
+        return "4".toCharArray()[0]
     }
     if (StringUtils.equals("five", StringUtils.substring(string, i-4, i))) {
-        return "5".toCharArray()[0];
+        return "5".toCharArray()[0]
     }
     if (StringUtils.equals("six", StringUtils.substring(string, i-3, i))) {
-        return "6".toCharArray()[0];
+        return "6".toCharArray()[0]
     }
     if (StringUtils.equals("seven", StringUtils.substring(string, i-5, i))) {
-        return "7".toCharArray()[0];
+        return "7".toCharArray()[0]
     }
     if (StringUtils.equals("eight", StringUtils.substring(string, i-5, i))) {
-        return "8".toCharArray()[0];
+        return "8".toCharArray()[0]
     }
     if (StringUtils.equals("nine", StringUtils.substring(string, i-4, i))) {
-        return "9".toCharArray()[0];
+        return "9".toCharArray()[0]
     }
 
     return null

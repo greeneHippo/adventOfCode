@@ -73,7 +73,7 @@ fun main() {
     }
 
     fun init(input: List<String>): TreeMap<Long, DiskElement> {
-        val disk: TreeMap<Long, DiskElement> = TreeMap<Long, DiskElement>()
+        val disk: TreeMap<Long, DiskElement> = TreeMap()
         var diskIndex = 0L
         var id = 0L
         input.first().toList().foldIndexed(disk) { index, acc, int ->

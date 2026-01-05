@@ -38,7 +38,7 @@ fun calculateMinimum(costGrid: MutableMap<Position, Int>, neighbourGrid :Mutable
     val visited: MutableMap<ImmutableTriple<Position, Direction, Int>, Boolean> = mutableMapOf()
 
     // Define the priority queue
-    val pq : PriorityQueue<State> = PriorityQueue<State> { left: State, right: State -> left.cost - right.cost }
+    val pq : PriorityQueue<State> = PriorityQueue { left: State, right: State -> left.cost - right.cost }
 
     // Initialize the two starting moves from the top left unit with the cost and add it to the queue as the first moves to evaluate.
     pq.add(State(Position(0,0), 0, 0, mutableListOf(Direction.EAST)))

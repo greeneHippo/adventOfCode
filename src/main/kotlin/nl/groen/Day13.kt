@@ -2,7 +2,7 @@ package nl.groen
 
 fun main() {
 
-    data class Element(val string: String, val wasList: Boolean = true);
+    data class Element(val string: String, val wasList: Boolean = true)
 
     fun splitIndex(string: String): Int {
         val indices = string.mapIndexed { i, char ->
@@ -17,7 +17,7 @@ fun main() {
         }
 
         return if (indices.count { it != 0} == 0) {
-            return 0
+            0
         } else {
             indices.first{it != 0}
         }

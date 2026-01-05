@@ -18,7 +18,7 @@ private fun partOne (lines : List<String>): Long {
 
     var galaxyCoordinates = determineGalaxPositions(expandedUniverse)
 
-    var result = galaxyCoordinates.map { it -> galaxyCoordinates.map{other -> it.shortestPathToGalaxy(other)}.reduce{sum, element -> sum+element}}
+    var result = galaxyCoordinates.map { galaxyCoordinates.map{ other -> it.shortestPathToGalaxy(other)}.reduce{ sum, element -> sum+element}}
 
     return result.reduce{sum, element -> sum+element}.toLong()/2
 }
@@ -94,7 +94,7 @@ private fun partTwo (lines : List<String>): Long {
 
 private fun determineGalaxiesAndReturnTravelLength(universe: List<List<Char>>): Long {
     var galaxyCoordinates = determineGalaxPositions(universe)
-    var result = galaxyCoordinates.map { it -> galaxyCoordinates.map { other -> it.shortestPathToGalaxy(other) }.reduce { sum, element -> sum + element } }
+    var result = galaxyCoordinates.map { galaxyCoordinates.map { other -> it.shortestPathToGalaxy(other) }.reduce { sum, element -> sum + element } }
     return result.reduce { sum, element -> sum + element }.toLong() / 2
 }
 

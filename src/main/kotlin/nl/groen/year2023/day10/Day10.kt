@@ -100,7 +100,7 @@ private fun expandArray(arrayPoints: List<List<Point>>): Array<Array<Point>> {
 
             if (!sourcePoint.partOfLoop) {
                 // Point is not part of the loop, the default is OK (ground / not part of loop)
-                continue;
+                continue
             }
             if (sourcePoint.part == PipePart.VERTICAL) {
                 expandedArrayOfPoints[yExpanded - 1][xExpanded] = sourcePoint

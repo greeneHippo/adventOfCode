@@ -409,13 +409,13 @@ fun validate(digOrderNeighbours: MutableMap<DigOrder, Neighbours>, previousSumEa
     val south = digOrderNeighbours.keys.filter { o -> o.direction == Direction.SOUTH }.sumOf { it.steps }
 
     if (east != west || north != south) {
-        throw Error("invalid orders east: ${east}, west: ${west}, north: ${north}, south: ${south} ")
+        throw Error("invalid orders east: ${east}, west: ${west}, north: ${north}, south: $south ")
     }
     if (east > previousSumEast) {
-        throw Error("Growth in east: ${east}, previousSumEast: ${previousSumEast}  ")
+        throw Error("Growth in east: ${east}, previousSumEast: $previousSumEast  ")
     }
     if (south > previousSumSouth) {
-        throw Error("Growth in south: ${south}, previousSumSouth: ${previousSumSouth}  ")
+        throw Error("Growth in south: ${south}, previousSumSouth: $previousSumSouth  ")
     }
 }
 

@@ -149,7 +149,7 @@ private fun partOne (lines : List<String>): Long {
 private fun partOneCorrect (lines : List<String>): Long {
 
     val result = lines.sumOf { it.split(" ").let { count(it.first(), it[1].split(",").map(String::toInt)) }}
-    return result;
+    return result
 }
 
 private val cache = hashMapOf<Pair<String, List<Int>>, Long>()
@@ -171,7 +171,7 @@ private fun count(config: String, groups: List<Int>): Long {
 private fun partOneDP (lines : List<String>): Long {
 
     val result = lines.sumOf { it.split(" ").let { countDP(it.first(), it[1].split(",").map(String::toInt), 0,0,0) }}
-    return result;
+    return result
 }
 
 // iconfig == current position within dots
@@ -226,7 +226,7 @@ private fun partTwo (lines : List<String>): Long {
 
 
     }
-    return result;
+    return result
 }
 
 fun main(args : Array<String>) {

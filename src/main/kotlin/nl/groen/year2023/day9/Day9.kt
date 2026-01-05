@@ -25,7 +25,7 @@ fun determineNextValue(it: String, reverse: Boolean): Long {
         sequence = sequenceNextLayer
     } while (lastElement != 0)
 
-    var sumLastElements = 0L
+    var sumLastElements: Long
     if (!reverse) {
         sumLastElements = differenceLastElement.reversed().reduce { sum, element -> sum + element }.toLong()
     } else {

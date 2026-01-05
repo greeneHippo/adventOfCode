@@ -81,7 +81,7 @@ fun main() {
 
         inspections.sortDescending()
 
-        val uitslag = inspections.filterIndexed { index, _ -> index < 2 }.reduce { acc, i -> Math.multiplyExact(acc, i) }.toLong()
+        val uitslag = inspections.filterIndexed { index, _ -> index < 2 }.reduce { acc, i -> Math.multiplyExact(acc, i) }
 //        println(uitslag)
         return uitslag
     }

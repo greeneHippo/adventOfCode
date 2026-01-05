@@ -4,7 +4,7 @@ import nl.groen.*
 
 fun main() {
 
-    data class LocationProperties (val symbol: String, var hasAntinode: Boolean = false);
+    data class LocationProperties (val symbol: String, var hasAntinode: Boolean = false)
 
     fun part1 (input : List<String>): Long {
 
