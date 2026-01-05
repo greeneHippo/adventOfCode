@@ -5,7 +5,7 @@ fun main() {
 
     fun determineSize(pointers: MutableMap<String, Pointer>, directoryName: String) : Long {
         val pointer = pointers[directoryName]!!
-        return pointer.size.toLong() + pointer.subPointers.sumOf { determineSize(pointers, directoryName + "/" + it) }
+        return pointer.size + pointer.subPointers.sumOf { determineSize(pointers, "$directoryName/$it") }
     }
 
     fun determineDirectorySizes(input: List<String>): List<Long> {
@@ -34,16 +34,16 @@ fun main() {
                 currentPointer = currentPointer.replaceAfterLast("/", "").dropLast(1)
             } else if (command.contains("cd")) {
                 val name = command.drop(5).trim()
-                currentPointer = currentPointer + "/" + name
+                currentPointer = "$currentPointer/$name"
                 acc[currentPointer] = Pointer(name, 0, mutableListOf())
             } else if (command.startsWith("$ ls")) {
-                val directories = action.subList(1, action.size).map { it.toString() }.filter { it.startsWith("dir") }.map {
+                val directories = action.subList(1, action.size).map { it }.filter { it.startsWith("dir") }.map {
                     val (_, name) = it.split(" ")
                     name
                 }
-                val files = action.subList(1, action.size).map { it.toString() }.filter { !it.startsWith("dir") }.map {
+                val files = action.subList(1, action.size).map { it }.filter { !it.startsWith("dir") }.map {
                     val (size, name) = it.split(" ")
-                    Pointer(currentPointer + "/" + name, size.toLong(), mutableListOf())
+                    Pointer("$currentPointer/$name", size.toLong(), mutableListOf())
                 }
 
                 acc[currentPointer]!!.subPointers = directories
@@ -53,7 +53,7 @@ fun main() {
                 throw Error("not implemented")
             }
 
-            println(currentPointer)
+            //println(currentPointer)
 
             acc
         }
