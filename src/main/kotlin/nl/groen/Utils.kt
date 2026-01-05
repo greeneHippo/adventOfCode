@@ -7,7 +7,12 @@ import kotlin.math.abs
 
 data class MoveAction(val position: Position, val direction: Direction)
 data class Position(val x: Int, val y: Int, val z: Int = -1)
+data class PositionDouble(val x: Double, val y: Double, val z: Double = (-1).toDouble())
 data class PositionLong(val x: Long, val y: Long, val z: Long = -1)
+
+fun mapPositionToDouble(position: Position) : PositionDouble {
+    return PositionDouble(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+}
 
 fun readInput (input : String): List<String> {
     return readInput("2022", input)
@@ -273,4 +278,59 @@ fun List<LongRange>.mergeRanges() : List<LongRange> {
     }
 
     return merged
+}
+
+// function to check if point q lies on line segment 'pr'
+fun onSegment(p : PositionDouble, q : PositionDouble,  r : PositionDouble): Boolean {
+    return (q.x <= Math.max(p.x, r.x) &&
+            q.x >= Math.min(p.x, r.x) &&
+            q.y <= Math.max(p.y, r.y) &&
+            q.y >= Math.min(p.y, r.y))
+}
+
+// function to find orientation of ordered triplet (p, q, r)
+// 0 --> p, q and r are collinear
+// 1 --> Clockwise
+// 2 --> Counterclockwise
+fun orientation(p : PositionDouble, q : PositionDouble,  r : PositionDouble) : Int {
+    val value: Double = (q.y - p.y) * (r.x - q.x) -
+            (q.x - p.x) * (r.y - q.y)
+
+    if (value == 0.toDouble()) return 0
+
+    return if (value > 0) 1 else 2
+}
+
+/**
+ * Checks if two line segments intersect using orientation checks
+ * @param vectorRectangle
+ * @param vectorRedTiles
+ */
+fun doIntersect (vectorRectangle: Pair<PositionDouble, PositionDouble>, vectorRedTiles: Pair<PositionDouble, PositionDouble>) :Boolean {
+
+    val o1 :Int = orientation (vectorRectangle.first, vectorRectangle.second, vectorRedTiles.first)
+    val o2 :Int = orientation (vectorRectangle.first, vectorRectangle.second, vectorRedTiles.second)
+    val o3 :Int = orientation (vectorRedTiles.first, vectorRedTiles.second, vectorRectangle.first)
+    val o4 :Int = orientation (vectorRedTiles.first, vectorRedTiles.second, vectorRectangle.second)
+
+    if (o1 != o2 && o3 != o4)
+        return true
+
+    if (o1 == 0 &&
+        onSegment(vectorRectangle.first, vectorRedTiles.first, vectorRectangle.second)
+    ) return true
+
+    if (o2 == 0 &&
+        onSegment(vectorRectangle.first, vectorRedTiles.second, vectorRectangle.second)
+    ) return true
+
+    if (o3 == 0 &&
+        onSegment(vectorRedTiles.first, vectorRectangle.first, vectorRedTiles.second)
+    ) return true
+
+    if (o4 == 0 &&
+        onSegment(vectorRedTiles.first, vectorRectangle.second, vectorRedTiles.second)
+    ) return true
+
+    return false
 }
