@@ -1,37 +1,11 @@
 package nl.groen.year2025
 
+import nl.groen.power
 import nl.groen.println
 import nl.groen.readInput
-import java.util.*
+import java.util.PriorityQueue
 
 fun main() {
-
-    class IntArrayKey(private val data: IntArray) {
-        private val hash = data.contentHashCode()
-
-        override fun equals(other: Any?) =
-            other is IntArrayKey && data.contentEquals(other.data)
-
-        override fun hashCode() = hash
-    }
-
-    val cache = hashMapOf<IntArrayKey, Long>()
-
-    fun List<Int>.pushButton(indexIndicatorsToUpdate: Set<Int>)
-    : List<Int> = toMutableList().apply {
-            indexIndicatorsToUpdate.forEach { index ->
-                this[index] = (this[index] + 1) % 2
-            }
-        }
-
-    fun IntArray.minusButton(indexIndicatorsToUpdate: Set<Int>)
-    : IntArray {
-        val intArrayToReturn = this.copyOf()
-        indexIndicatorsToUpdate.forEach { index ->
-            intArrayToReturn[index]--
-        }
-        return intArrayToReturn
-    }
 
     data class State(val buttonsPressed: List<Int>, val statusIndicators: List<Int>)
     data class Machine(val indicatorGoalToReach : List<Int>, val buttons : List<Set<Int>>) {
@@ -49,7 +23,7 @@ fun main() {
 
                 this.buttons.forEachIndexed { buttonIndex, button ->
 
-                    // Check for part 1 that the buttons are not pushed more than once.
+                    // Check that the buttons are not pushed more than once.
                     if (next.buttonsPressed[buttonIndex] == 1) {
                         return@forEachIndexed
                     }
@@ -72,22 +46,6 @@ fun main() {
             }
 
             throw IllegalStateException()
-        }
-
-        fun determineMinimumOfButtonsRecursive(indicatorGoalToReach: IntArray): Long {
-
-            return cache.getOrPut(IntArrayKey(indicatorGoalToReach)) {
-
-                if (indicatorGoalToReach.any { it < 0 }) {
-                    return@getOrPut 1000000L
-                }
-
-                val minimumEachButton = this.buttons.map { button ->
-                    determineMinimumOfButtonsRecursive(indicatorGoalToReach.minusButton(button))
-                }
-
-                return@getOrPut minimumEachButton.min() + 1
-            }
         }
     }
 
@@ -118,6 +76,88 @@ fun main() {
         return buttonsToPress.sum()
     }
 
+    val cacheCombinationOfButtonsToReachGoal = hashMapOf<String, List<List<Int>>>()
+
+    fun determineAllCombinationsOfButtonsForParity(indicatorGoalToReach: List<Int>, buttons: List<Set<Int>>): List<List<Int>> {
+
+        return cacheCombinationOfButtonsToReachGoal.getOrPut(indicatorGoalToReach.joinToString (",")) {
+
+            val localCache = hashSetOf<List<Int>>()
+            val queue : ArrayDeque<State> = ArrayDeque()
+            val combinations = mutableSetOf<List<Int>>()
+
+            localCache.add(List(buttons.size) { 0 })
+            queue.add(State(List(buttons.size) { 0 }, List(indicatorGoalToReach.size) { 0 }))
+
+            while (queue.isNotEmpty()) {
+                val next = queue.removeFirst()
+
+                buttons.forEachIndexed { buttonIndex, button ->
+
+                    // Check that the buttons are not pushed more than once.
+                    if (next.buttonsPressed[buttonIndex] == 1) {
+                        return@forEachIndexed
+                    }
+
+                    val indicatorAfterPush = next.statusIndicators.pushButton(button)
+                    val updateButtons = next.buttonsPressed.toMutableList()
+                    updateButtons[buttonIndex]++
+
+                    if (indicatorGoalToReach == indicatorAfterPush) {
+                        combinations.add(updateButtons)
+                    }
+
+                    if (localCache.contains(updateButtons)) {
+                        return@forEachIndexed
+                    }
+
+                    localCache.add(updateButtons)
+                    queue.add(State(updateButtons, indicatorAfterPush))
+                }
+            }
+
+            return@getOrPut combinations.toList()
+        }
+    }
+
+    val cacheMinimumButtonsToReachGoal = hashMapOf<String, Long>()
+
+    fun determineMinimumOfButtonsPart2(indicatorGoalToReach: List<Int>, buttons: List<Set<Int>>): Long {
+
+        return cacheMinimumButtonsToReachGoal.getOrPut(indicatorGoalToReach.joinToString (",")) {
+            val indicatorsUneven = indicatorGoalToReach.map { it % 2 }
+
+            val combinations = determineAllCombinationsOfButtonsForParity(indicatorsUneven, buttons)
+
+            val steps = combinations.map { buttonIds ->
+
+                val indicatorLeftOver = indicatorGoalToReach.pushButtons(buttonIds, buttons)
+
+                if (indicatorLeftOver.any { it < 0 }) {
+                    return@map listOf(10000000L)
+                }
+                if (indicatorLeftOver.all { it == 0 }) {
+                    return@map listOf(buttonIds.sum().toLong())
+                }
+
+                val results = mutableListOf<Long>()
+                var isEven = true
+                var divided = indicatorLeftOver
+                var tries = 0L
+                while (isEven) {
+                    divided = divideByTwo(divided)
+                    tries++
+                    results.add((power(2L, tries) * determineMinimumOfButtonsPart2(divided, buttons)) + buttonIds.sum().toLong())
+                    isEven = divided.all { it % 2 == 0 }
+                }
+
+                return@map results
+            }.flatten()
+
+            return@getOrPut if (steps.isEmpty()) 10000000L else steps.min()
+        }
+    }
+
     fun part2 (input : List<String>): Long {
         val machines = input
             .map { line -> line.split(" ") }.toMutableList()
@@ -136,13 +176,15 @@ fun main() {
                                 .split(",")
                                 .map{it.toInt()}
                                 .toSet()
-                        })}
+                        }
+                )}
 
         val buttonsToPress = machines.map {
             println(it)
-            cache.clear()
-            cache[IntArrayKey(IntArray(it.indicatorGoalToReach.size) { 0 })] = 0
-            val value = it.determineMinimumOfButtonsRecursive(it.indicatorGoalToReach.toIntArray())
+            cacheCombinationOfButtonsToReachGoal.clear()
+            cacheMinimumButtonsToReachGoal.clear()
+            val (divided, tries) = determineDivisionByTwoToReachUneven(it.indicatorGoalToReach)
+            val value = power(2L, tries) * determineMinimumOfButtonsPart2(divided, it.buttons)
             return@map value
         }
 
@@ -161,3 +203,35 @@ fun main() {
 
 }
 
+private fun List<Int>.pushButtons(buttonSequence: List<Int>, buttons: List<Set<Int>>) : List<Int>
+    = toMutableList().apply {
+    buttonSequence.forEachIndexed { index, toPush ->
+        if (toPush == 0) {
+            return@forEachIndexed
+        }
+        buttons[index].forEach { indexIndicator ->
+            this[indexIndicator]--
+        }
+    }
+}
+
+private fun List<Int>.pushButton(indexIndicatorsToUpdate: Set<Int>)
+        : List<Int> = toMutableList().apply {
+    indexIndicatorsToUpdate.forEach { index ->
+        this[index] = (this[index] + 1) % 2
+    }
+}
+
+private fun determineDivisionByTwoToReachUneven(indicatorLeftOver: List<Int>): Pair<List<Int>, Long> {
+    var divided = indicatorLeftOver
+    var tries = 0L
+    while (divided.all { it % 2 == 0 }) {
+        divided = divided.map { it / 2 }
+        tries++
+    }
+    return Pair(divided, tries)
+}
+
+private fun divideByTwo(indicatorLeftOver: List<Int>): List<Int> {
+    return indicatorLeftOver.map { it / 2 }
+}
